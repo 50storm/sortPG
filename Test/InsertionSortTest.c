@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     clock_t start, end;
     start = clock();
     Insertion_Sort(Data,size-1);
-    printf("=Quick Sort=\t\tComparing: %ld\n" , COMPARE_COUNT);
+    printf("=Insertion Sort=\t\tComparing: %ld\n" , COMPARE_COUNT);
     end = clock();
     printf("time: %f[sec]\n", (double)(end - start) / CLOCKS_PER_SEC);
 
