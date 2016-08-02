@@ -1,30 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define DEBUG  0 
+#define DEBUG 1
+ 
 long COMPARE_COUNT=0;
 
-int Swap(long X[], long n, long m){
-      long tmp;
 
-      tmp  = X[n];
-      X[n] = X[m];
-      X[m] = tmp;
-      return 0;
-
-}
-
-int Selection_Sort(long X[], long num){
-      long i,j,max;
-      for(i=num-1; i > 0; i--)
+int Insertion_Sort(long X[], long num){
+      int i,j,tmp;
+      for(i=1; i < num ; i++)
       {
-            max=0;
-            for(j=1; j<=i ; j++)
+            tmp = X[i];
+            for(j=i-1; j>=0 ; j--)
             {
                   COMPARE_COUNT++;
-                  if(X[max] < X[j]) max=j;
+                  if(tmp < X[j])
+                  {
+                    X[j+1]=X[j];
+                    if(j==0) X[0]=tmp;
+                  }else{
+                    X[j+1] = tmp;
+                    break;
+                  }
             }
-            Swap(X,i,max);
       }
       return 0;
 
@@ -66,42 +64,35 @@ int main(int argc, char *argv[])
    
     /* Make Data */
     srand((unsigned int)time(NULL)); //Hiroshi seedの工夫
-    for(i=0;i<size;i++) Data[i]=rand()%size;
+    for(i=0;i<size;i++) Data[i]=rand();
     
-#if DEBUG == 1
+#if DEBUG == 1    
     /*Write data before sorting*/
-    filename = "before_sorting_quickSort" ;
+    filename = "before_insertion_sort" ;
     fp = fopen(filename, "w");
-    for(i=0;i<size;i++) 
-    {
-            for(j=0; j<10 ; j++){
-                fprintf( fp, "%ld\n",   Data[i]  );
-            }
-     }
+    for(i=0;i<size;i++)   fprintf( fp, "%ld\n",   Data[i]  );
+    fclose(fp);
 #endif
-    
+        
+    /* Sort Data */
     COMPARE_COUNT=0;
     clock_t start, end;
     start = clock();
-    Selection_Sort(Data,size-1);
-    printf("Selection Sort=\t\tComparing: %ld\n" , COMPARE_COUNT);
+    Insertion_Sort(Data,size);
     end = clock();
+    printf("=Insertion Sort=\t\tComparing: %ld\n" , COMPARE_COUNT);
     printf("time: %f[sec]\n", (double)(end - start) / CLOCKS_PER_SEC);
 
-#if DEBUG == 1
+#if DEBUG==1
     /*Write data after sorting*/
-    filename = "after_sorting_quickSort" ;
+    filename = "after_insertion_sort" ;
     fp = fopen(filename, "w");
-    for(i=0;i<size;i++) 
-    {
-        for(j=0; j<10 ; j++){
-            fprintf( fp, "%ld\n",   Data[i]  );
-         }
-    }
+    for(i=0;i<size;i++) fprintf( fp, "%ld\n",   Data[i]  );
+    fclose(fp);
 #endif
-
     /* free memory */
     free(Data); 
     return 0;
+
 
 }

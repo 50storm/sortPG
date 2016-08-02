@@ -1,47 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define DEBUG 0 
- 
+#define DEBUG  1
 long COMPARE_COUNT=0;
- 
-int Swap( long x[], long i, long j)
-{
-   long tmp;
- 
-   tmp = x[i];
-   x[i] = x[j];
-   x[j] = tmp;
- 
-   return 0;
+
+int Swap(long X[], long n, long m){
+      long tmp;
+
+      tmp  = X[n];
+      X[n] = X[m];
+      X[m] = tmp;
+      return 0;
+
 }
 
-int Quick_Sort(long x[], long min, long max)
-{
-   long i,j,p;
-   if(min>=max)return 1;
- 
-   p = x[(min+max)/2];
-   i = min;
-   j = max;
- 
-   while(i<=j)
-       {
-       while(x[i]<p){ i++; COMPARE_COUNT++;}
-       COMPARE_COUNT++;
-       while(x[j]>p){ j--; COMPARE_COUNT++;}
-       COMPARE_COUNT++;
-       if(i>=j) break;
-       Swap(x,i,j);
-       i++; j--;
-       }
- 
-   Quick_Sort(x,min,i-1);
-   Quick_Sort(x,j+1,max);
- 
-   return 0;
+int Selection_Sort(long X[], long num){
+      long i,j,max;
+      for(i=num-1; i > 0; i--)
+      {
+            max=0;
+            for(j=1; j<=i ; j++)
+            {
+                  COMPARE_COUNT++;
+                  if(X[max] < X[j]) max=j;
+            }
+            Swap(X,i,max);
+      }
+      return 0;
+
 }
- 
+
 
 int main(int argc, char *argv[])
 {
@@ -78,42 +66,34 @@ int main(int argc, char *argv[])
    
     /* Make Data */
     srand((unsigned int)time(NULL)); //Hiroshi seedの工夫
-    for(i=0;i<size;i++) Data[i]=rand()%size;
+    for(i=0;i<size;i++) Data[i]=rand();
     
-#if DEBUG == 1    
+#if DEBUG == 1
     /*Write data before sorting*/
-    filename = "before_sorting_quickSort" ;
+    filename = "before_selection_sort" ;
     fp = fopen(filename, "w");
-    for(i=0;i<size;i++) 
-    {
-            for(j=0; j<10 ; j++){
-                fprintf( fp, "%ld\n",   Data[i]  );
-            }
-     }
+    for(i=0;i<size;i++)  fprintf( fp, "%ld\n",   Data[i]  );
+    fclose(fp);
 #endif
-        
-    /* Sort Data */
+    
     COMPARE_COUNT=0;
     clock_t start, end;
     start = clock();
-    Quick_Sort(Data,0,size-1);
-    printf("=Quick Sort=\t\tComparing: %ld\n" , COMPARE_COUNT);
+    Selection_Sort(Data,size);
     end = clock();
+    printf("Selection Sort=\t\tComparing: %ld\n" , COMPARE_COUNT);
     printf("time: %f[sec]\n", (double)(end - start) / CLOCKS_PER_SEC);
 
-#if DEBUG == 1    
+#if DEBUG == 1
     /*Write data after sorting*/
-    filename = "after_sorting_quickSort" ;
+    filename = "after_selection_sort" ;
     fp = fopen(filename, "w");
-    for(i=0;i<size;i++) 
-    {
-        for(j=0; j<10 ; j++){
-            fprintf( fp, "%ld\n",   Data[i]  );
-         }
-    }
+    for(i=0;i<size;i++) fprintf( fp, "%ld\n",   Data[i]  );
+    fclose(fp);
 #endif
 
     /* free memory */
     free(Data); 
     return 0;
+
 }
